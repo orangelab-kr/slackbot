@@ -1,6 +1,5 @@
+import { App, LogLevel } from '@slack/bolt';
 import { getPaidCommand, logger } from '.';
-
-import { App } from '@slack/bolt';
 
 export * from './tools';
 export * from './commands';

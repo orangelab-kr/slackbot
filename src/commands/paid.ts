@@ -18,6 +18,7 @@ export const getPaidCommand: Middleware<SlackCommandMiddlewareArgs> = async (
     return;
   }
 
+  await ctx.ack();
   const birthday = user.birthday.format('YYYY년 MM월 DD일');
   await ctx.say(`${user.username} ${user.phone} (${birthday})`);
   if (rides.length <= 0) {
@@ -25,7 +26,6 @@ export const getPaidCommand: Middleware<SlackCommandMiddlewareArgs> = async (
     return;
   }
 
-  await ctx.ack();
   for (const ride of rides) {
     const diff = ride.endedAt.diff(ride.startedAt, 'minutes');
     const price = await getPrice(ride.branch, diff);
