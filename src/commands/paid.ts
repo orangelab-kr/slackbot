@@ -1,7 +1,5 @@
 import { Middleware, SlackCommandMiddlewareArgs } from '@slack/bolt';
-
-import { Paid } from '../controllers/paid';
-import { getPrice } from '../tools';
+import { Paid, getPrice } from '..';
 
 export const getPaidCommand: Middleware<SlackCommandMiddlewareArgs> = async (
   ctx

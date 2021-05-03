@@ -1,17 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs';
 import { getPrice, logger } from '../tools';
 
-import admin from 'firebase-admin';
-
-admin.initializeApp({
-  credential: admin.credential.cert(
-    JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL || '{}')
-  ),
-});
-
-const firestore = admin.firestore();
-const rideCol = firestore.collection('ride');
-const userCol = firestore.collection('users');
+import { firestore } from '..';
 
 export interface User {
   uid: string;
@@ -51,6 +41,8 @@ export class Paid {
     price: number
   ): Promise<void> {
     const rideId = ride.ref.substr(5);
+    const rideCol = firestore.collection('ride');
+    const userCol = firestore.collection('users');
     await rideCol.doc(rideId).update({
       cost: price,
       payment: merchantUid,
@@ -76,6 +68,7 @@ export class Paid {
 
   public static async getUserByPhone(phone: string): Promise<User | null> {
     let user = null;
+    const userCol = firestore.collection('users');
     const users = await userCol.where('phone', '==', phone).limit(1).get();
     users.forEach((userDoc) => {
       const userData = userDoc.data();
@@ -93,6 +86,7 @@ export class Paid {
 
   public static async getUserRides(uid: string): Promise<Ride[]> {
     const rides: Ride[] = [];
+    const userCol = firestore.collection('users');
     const rideDocs = await userCol
       .doc(uid)
       .collection('ride')
