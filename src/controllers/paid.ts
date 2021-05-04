@@ -115,16 +115,13 @@ export class Paid {
   public static async setPaiedByPhone(
     phone: string
   ): Promise<{ user: User | null; rides: Ride[] }> {
-    const user = await this.getUserByPhone(phone);
-    if (!user) return { user, rides: [] };
-
-    const rides = await this.getUserRides(user.uid);
-    if (rides.length <= 0) return { user, rides };
+    const { user, rides } = await this.getUnpaiedByPhone(phone);
+    if (!user || rides.length <= 0) return { user, rides };
 
     for (const ride of rides) {
-      const diff = ride.endedAt.diff(ride.startedAt, 'minutes');
-      const price = await getPrice(ride.branch, diff);
       try {
+        const diff = ride.endedAt.diff(ride.startedAt, 'minutes');
+        const price = await getPrice(ride.branch, diff);
         await this.setPaied(user, ride, `${Date.now()}`, price);
       } catch (err) {
         logger.error(err.message);
@@ -132,6 +129,16 @@ export class Paid {
       }
     }
 
+    return { user, rides };
+  }
+
+  public static async getUnpaiedByPhone(
+    phone: string
+  ): Promise<{ user: User | null; rides: Ride[] }> {
+    const user = await this.getUserByPhone(phone);
+    if (!user) return { user, rides: [] };
+
+    const rides = await this.getUserRides(user.uid);
     return { user, rides };
   }
 }

@@ -4,6 +4,7 @@ import {
   getRebootCommand,
   getStartCommand,
   getStopCommand,
+  getUnpaidCommand,
 } from './commands';
 import { getPaidCommand, logger } from '.';
 
@@ -50,6 +51,7 @@ async function main() {
   app.command('/stop', getStopCommand);
   app.command('/lighton', getLightOnCommand);
   app.command('/lightoff', getLightOffCommand);
+  app.command('/unpaid', getUnpaidCommand);
 
   logger.info('[Main] 서버를 시작하는 중입니다.');
   await app.start(Number(process.env.PORT) || 3000);
