@@ -4,19 +4,19 @@ import { Paid, getPrice } from '..';
 export const getUnpaidCommand: Middleware<SlackCommandMiddlewareArgs> = async (
   ctx
 ) => {
+  await ctx.ack();
   const { text } = ctx.body;
   if (!text.startsWith('+82') || text.length !== 13) {
-    await ctx.ack('반드시 +82로 시작하는 전화번호 13자리이여야 합니다.');
+    await ctx.say('반드시 +82로 시작하는 전화번호 13자리이여야 합니다.');
     return;
   }
 
   const { user, rides } = await Paid.getUnpaiedByPhone(text);
   if (!user) {
-    await ctx.ack('사용자를 찾을 수 없습니다');
+    await ctx.say('사용자를 찾을 수 없습니다');
     return;
   }
 
-  await ctx.ack();
   const birthday = user.birthday.format('YYYY년 MM월 DD일');
   await ctx.say(`${user.username} ${user.phone} (${birthday})`);
   if (rides.length <= 0) {
