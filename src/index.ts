@@ -11,6 +11,7 @@ import { getPaidCommand, logger } from '.';
 import { App } from '@slack/bolt';
 import admin from 'firebase-admin';
 import mqtt from 'mqtt';
+import { getTerminateCommand } from './commands/terminate';
 
 export * from './tools';
 export * from './commands';
@@ -22,6 +23,7 @@ admin.initializeApp({
   ),
 });
 
+export const auth = admin.auth();
 export const firestore = admin.firestore();
 export const mqttClient = mqtt.connect(String(process.env.MQTT_URL), {
   username: String(process.env.MQTT_USERNAME),
@@ -52,6 +54,7 @@ async function main() {
   app.command('/lighton', getLightOnCommand);
   app.command('/lightoff', getLightOffCommand);
   app.command('/unpaid', getUnpaidCommand);
+  app.command('/terminate', getTerminateCommand);
 
   logger.info('[Main] 서버를 시작하는 중입니다.');
   await app.start(Number(process.env.PORT) || 3000);
