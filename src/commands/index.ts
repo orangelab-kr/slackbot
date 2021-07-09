@@ -5,3 +5,4 @@ export * from './stop';
 export * from './lighton';
 export * from './lightoff';
 export * from './unpaid';
+export * from './terminate';

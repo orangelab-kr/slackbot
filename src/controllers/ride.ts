@@ -4,8 +4,8 @@ import {
   firestore,
   getPrice,
   iamport,
+  Kickboard,
   logger,
-  mqttClient,
   send,
 } from '..';
 
@@ -185,7 +185,24 @@ export class Ride {
   public static async stopKickboard(ride: RideDetail): Promise<void> {
     const kickCol = firestore.collection('kick');
     await kickCol.doc(ride.kickboardId).update({ can_ride: true });
-    mqttClient.publish(ride.kickboardId, JSON.stringify({ cmd: 'stop' }));
+    const kickboardDoc = (await kickCol.doc(ride.kickboardId).get()).data();
+    if (!kickboardDoc) {
+      throw Error(
+        `${ride.kickboardId} 킥보드를 찾지 못해 종료하지 못했습니다.`
+      );
+    }
+
+    const kickboard = await Kickboard.getKickboardIdByCode(
+      kickboardDoc.code
+    ).catch(() => null);
+    if (!kickboard)
+      throw Error('킥보드의 정보를 받아올 수 없어 종료할 수 없습니다');
+
+    try {
+      await kickboard.stop();
+    } catch (err) {
+      throw Error(`킥보드에 응답이 없습니다. ${err.message}`);
+    }
   }
 
   public static async tryPayment(

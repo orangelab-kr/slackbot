@@ -1,21 +1,20 @@
+import { App } from '@slack/bolt';
+import admin from 'firebase-admin';
 import {
   getLightOffCommand,
   getLightOnCommand,
+  getPaidCommand,
   getRebootCommand,
   getStartCommand,
   getStopCommand,
+  getTerminateCommand,
   getUnpaidCommand,
-} from './commands';
-import { getPaidCommand, logger } from '.';
+  logger
+} from '.';
 
-import { App } from '@slack/bolt';
-import admin from 'firebase-admin';
-import mqtt from 'mqtt';
-import { getTerminateCommand } from './commands/terminate';
-
-export * from './tools';
 export * from './commands';
 export * from './controllers';
+export * from './tools';
 
 admin.initializeApp({
   credential: admin.credential.cert(
@@ -25,21 +24,8 @@ admin.initializeApp({
 
 export const auth = admin.auth();
 export const firestore = admin.firestore();
-export const mqttClient = mqtt.connect(String(process.env.MQTT_URL), {
-  username: String(process.env.MQTT_USERNAME),
-  password: String(process.env.MQTT_PASSWORD),
-});
-
-const waitForConnect = () =>
-  new Promise<void>((resolve) => {
-    mqttClient.on('connect', () => {
-      logger.info(`[Mqtt] 서버와 연결되었습니다.`);
-      resolve();
-    });
-  });
 
 async function main() {
-  await waitForConnect();
   const app = new App({
     socketMode: true,
     appToken: String(process.env.SLACK_APP_TOKEN),
@@ -61,9 +47,7 @@ async function main() {
   logger.info('[Main] 서버가 시작되었습니다.');
 
   app.error((err) => {
-    logger.error(
-      `[Main] 오류가 발생하여 서버를 재시작합니다. $(${err.message})`
-    );
+    logger.error(`[Main] 오류가 발생하여 서버를 재시작합니다. ${err.message}`);
 
     logger.error(err.stack);
     process.exit(1);
