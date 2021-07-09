@@ -12,13 +12,21 @@ export const getLightOnCommand: Middleware<SlackCommandMiddlewareArgs> = async (
     return;
   }
 
-  const code = text.toUpperCase();
-  const id = await Kickboard.getKickboardIdByCode(code);
-  if (!id) {
+  const kickboard = await Kickboard.getKickboardIdByCode(text);
+  if (!kickboard) {
     await ctx.say('해당 킥보드를 찾을 수 없습니다.');
     return;
   }
 
-  Kickboard.lightOn(id);
-  await ctx.say(`*${code}(${id})* 킥보드의 라이트를 켰습니다.`);
+  const { kickboardCode, kickboardId } = kickboard;
+  try {
+    await kickboard.lightOn({});
+    await ctx.say(
+      `*${kickboardCode}(${kickboardId})* 킥보드의 라이트를 켰습니다.`
+    );
+  } catch (err) {
+    await ctx.say(
+      `*${kickboardCode}(${kickboardId})* 킥보드를 조작하는데 실패하였습니다. ${err.message}`
+    );
+  }
 };

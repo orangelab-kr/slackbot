@@ -12,13 +12,21 @@ export const getRebootCommand: Middleware<SlackCommandMiddlewareArgs> = async (
     return;
   }
 
-  const code = text.toUpperCase();
-  const id = await Kickboard.getKickboardIdByCode(code);
-  if (!id) {
-    await ctx.ack('해당 킥보드를 찾을 수 없습니다.');
+  const kickboard = await Kickboard.getKickboardIdByCode(text);
+  if (!kickboard) {
+    await ctx.say('해당 킥보드를 찾을 수 없습니다.');
     return;
   }
 
-  Kickboard.reboot(id);
-  await ctx.say(`*${code}(${id})* 킥보드를 재시작하였습니다.`);
+  const { kickboardCode, kickboardId } = kickboard;
+  try {
+    await kickboard.reboot();
+    await ctx.say(
+      `*${kickboardCode}(${kickboardId})* 킥보드를 재시작했습니다.`
+    );
+  } catch (err) {
+    await ctx.say(
+      `*${kickboardCode}(${kickboardId})* 킥보드를 조작하는데 실패하였습니다. ${err.message}`
+    );
+  }
 };

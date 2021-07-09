@@ -1,24 +1,30 @@
 import { Middleware, SlackCommandMiddlewareArgs } from '@slack/bolt';
+import { Kickboard } from '..';
 
-import { Kickboard } from '../controllers/kickboard';
+export const getLightOffCommand: Middleware<SlackCommandMiddlewareArgs> =
+  async (ctx) => {
+    await ctx.ack();
+    const { text } = ctx.body;
+    if (text.length !== 6) {
+      await ctx.say('킥보드 코드를 입력해주세요. (ex. DE20KP)');
+      return;
+    }
 
-export const getLightOffCommand: Middleware<SlackCommandMiddlewareArgs> = async (
-  ctx
-) => {
-  await ctx.ack();
-  const { text } = ctx.body;
-  if (text.length !== 6) {
-    await ctx.say('킥보드 코드를 입력해주세요. (ex. DE20KP)');
-    return;
-  }
+    const kickboard = await Kickboard.getKickboardIdByCode(text);
+    if (!kickboard) {
+      await ctx.say('해당 킥보드를 찾을 수 없습니다.');
+      return;
+    }
 
-  const code = text.toUpperCase();
-  const id = await Kickboard.getKickboardIdByCode(code);
-  if (!id) {
-    await ctx.say('해당 킥보드를 찾을 수 없습니다.');
-    return;
-  }
-
-  Kickboard.lightOff(id);
-  await ctx.say(`*${code}(${id})* 킥보드의 라이트를 껐습니다.`);
-};
+    const { kickboardCode, kickboardId } = kickboard;
+    try {
+      await kickboard.lightOff();
+      await ctx.say(
+        `*${kickboardCode}(${kickboardId})* 킥보드의 라이트를 껐습니다.`
+      );
+    } catch (err) {
+      await ctx.say(
+        `*${kickboardCode}(${kickboardId})* 킥보드를 조작하는데 실패하였습니다. ${err.message}`
+      );
+    }
+  };
