@@ -3,13 +3,14 @@ import admin from 'firebase-admin';
 import {
   getLightOffCommand,
   getLightOnCommand,
+  getLocationCommand,
   getPaidCommand,
   getRebootCommand,
   getStartCommand,
   getStopCommand,
   getTerminateCommand,
   getUnpaidCommand,
-  logger
+  logger,
 } from '.';
 
 export * from './commands';
@@ -41,6 +42,7 @@ async function main() {
   app.command('/lightoff', getLightOffCommand);
   app.command('/unpaid', getUnpaidCommand);
   app.command('/terminate', getTerminateCommand);
+  app.command('/location', getLocationCommand);
 
   logger.info('[Main] 서버를 시작하는 중입니다.');
   await app.start(Number(process.env.PORT) || 3000);

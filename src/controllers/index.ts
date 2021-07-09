@@ -1,2 +1,2 @@
-export * from './paid';
 export * from './kickboard';
+export * from './paid';
