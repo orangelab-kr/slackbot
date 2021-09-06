@@ -1,3 +1,4 @@
+export * from './generateToken';
 export * from './lightoff';
 export * from './lighton';
 export * from './location';

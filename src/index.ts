@@ -1,6 +1,7 @@
 import { App } from '@slack/bolt';
 import admin from 'firebase-admin';
 import {
+  getGenerateTokenCommand,
   getLightOffCommand,
   getLightOnCommand,
   getLocationCommand,
@@ -43,6 +44,7 @@ async function main() {
   app.command('/unpaid', getUnpaidCommand);
   app.command('/terminate', getTerminateCommand);
   app.command('/location', getLocationCommand);
+  app.command('/generate-token', getGenerateTokenCommand);
 
   logger.info('[Main] 서버를 시작하는 중입니다.');
   await app.start(Number(process.env.PORT) || 3000);
