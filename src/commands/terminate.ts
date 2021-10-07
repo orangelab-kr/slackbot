@@ -39,8 +39,16 @@ export const getTerminateCommand: Middleware<SlackCommandMiddlewareArgs> =
       }
 
       try {
+        const isLast = await Ride.isLastRide(ride);
+        if (isLast) await Ride.stopKickboard(ride);
+      } catch (err: any) {
+        await ctx.say('킥보드를 종료할 수 없습니다. ' + err.message);
+      }
+
+      try {
         await Ride.terminateRide(ride, user);
-      } catch (err) {
+        await ctx.say('라이드를 종료하였습니다.');
+      } catch (err: any) {
         await ctx.say(`특정 라이드를 종료할 수 없었습니다. ${err.message}`);
       }
     }

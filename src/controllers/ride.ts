@@ -142,9 +142,7 @@ export class Ride {
     const priceStr = `${price.toLocaleString()}원`;
     const maxHours = '관리자가 지정한 ';
     const props = { user, ride, usedAt, maxHours, priceStr, cardName };
-    const isLast = await this.isLastRide(ride);
     user.username = user.username || '고객';
-    if (isLast) await this.stopKickboard(ride);
     const rideCol = firestore.collection('ride');
 
     await Promise.all([
@@ -195,13 +193,14 @@ export class Ride {
     const kickboard = await Kickboard.getKickboardIdByCode(
       kickboardDoc.code
     ).catch(() => null);
-    if (!kickboard)
+    if (!kickboard) {
       throw Error('킥보드의 정보를 받아올 수 없어 종료할 수 없습니다');
+    }
 
     try {
       await kickboard.stop();
-    } catch (err) {
-      throw Error(`킥보드에 응답이 없습니다. ${err.message}`);
+    } catch (err: any) {
+      throw Error(err.message);
     }
   }
 
@@ -234,7 +233,7 @@ export class Ride {
         logger.info(`결제 실패, ${res.fail_reason}`);
         await sleep(3000);
       }
-    } catch (err) {
+    } catch (err: any) {
       logger.error('결제 오류가 발생하였습니다. ' + err.name);
       logger.error(err.stack);
     }
@@ -327,7 +326,7 @@ export class Ride {
       );
 
       return authUser.phoneNumber;
-    } catch (err) {
+    } catch (err: any) {
       logger.error(err.message);
       logger.info(err.stack);
       return null;
