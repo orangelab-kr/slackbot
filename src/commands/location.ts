@@ -27,7 +27,7 @@ export const getLocationCommand: Middleware<SlackCommandMiddlewareArgs> =
 · 킥보드 좌표: https://map.kakao.com/link/map/${kickboardCode},${location}
 · 관리자 URL: https://console.firebase.google.com/u/0/project/hikick-dfcb5/firestore/data/~2Fkick~2F${kickboardId}`
       );
-    } catch (err) {
+    } catch (err: any) {
       await ctx.say(
         `*${kickboardCode}(${kickboardId})* 킥보드 위치 정보를 가져올 수 없습니다. ${err.message}`
       );

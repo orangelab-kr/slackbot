@@ -94,7 +94,7 @@ export const getGenerateTokenCommand: Middleware<SlackCommandMiddlewareArgs> =
 
     try {
       await ctx.say(service.getAccessKey());
-    } catch (err) {
+    } catch (err: any) {
       await ctx.say(`토큰을 생성할 수 없습니다. ${err.message}`);
     }
   };

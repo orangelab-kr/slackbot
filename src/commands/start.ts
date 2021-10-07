@@ -1,6 +1,6 @@
 import { Middleware, SlackCommandMiddlewareArgs } from '@slack/bolt';
 
-import { Kickboard } from '../controllers/kickboard';
+import { Kickboard } from '../controllers';
 
 export const getStartCommand: Middleware<SlackCommandMiddlewareArgs> = async (
   ctx
@@ -24,7 +24,7 @@ export const getStartCommand: Middleware<SlackCommandMiddlewareArgs> = async (
     await ctx.say(
       `*${kickboardCode}(${kickboardId})* 킥보드를 시작하였습니다.`
     );
-  } catch (err) {
+  } catch (err: any) {
     await ctx.say(
       `*${kickboardCode}(${kickboardId})* 킥보드를 조작하는데 실패하였습니다. ${err.message}`
     );

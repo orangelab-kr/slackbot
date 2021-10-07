@@ -24,7 +24,7 @@ export const getStopCommand: Middleware<SlackCommandMiddlewareArgs> = async (
     await ctx.say(
       `*${kickboardCode}(${kickboardId})* 킥보드를 종료하였습니다.`
     );
-  } catch (err) {
+  } catch (err: any) {
     await ctx.say(
       `*${kickboardCode}(${kickboardId})* 킥보드를 조작하는데 실패하였습니다. ${err.message}`
     );

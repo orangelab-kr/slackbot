@@ -22,7 +22,7 @@ export const getLightOffCommand: Middleware<SlackCommandMiddlewareArgs> =
       await ctx.say(
         `*${kickboardCode}(${kickboardId})* 킥보드의 라이트를 껐습니다.`
       );
-    } catch (err) {
+    } catch (err: any) {
       await ctx.say(
         `*${kickboardCode}(${kickboardId})* 킥보드를 조작하는데 실패하였습니다. ${err.message}`
       );

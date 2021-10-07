@@ -46,12 +46,12 @@ async function main() {
   app.command('/location', getLocationCommand);
   app.command('/generate-token', getGenerateTokenCommand);
 
-  logger.info('[Main] 서버를 시작하는 중입니다.');
+  logger.info('Main / 서버를 시작하는 중입니다.');
   await app.start(Number(process.env.PORT) || 3000);
-  logger.info('[Main] 서버가 시작되었습니다.');
+  logger.info('Main / 서버가 시작되었습니다.');
 
   app.error((err) => {
-    logger.error(`[Main] 오류가 발생하여 서버를 재시작합니다. ${err.message}`);
+    logger.error(`Main / 오류가 발생하여 서버를 재시작합니다. ${err.message}`);
 
     logger.error(err.stack);
     process.exit(1);

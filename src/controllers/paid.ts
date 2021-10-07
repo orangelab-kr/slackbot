@@ -123,7 +123,7 @@ export class Paid {
         const diff = ride.endedAt.diff(ride.startedAt, 'minutes');
         const price = await getPrice(ride.branch, diff);
         await this.setPaied(user, ride, `${Date.now()}`, price);
-      } catch (err) {
+      } catch (err: any) {
         logger.error(err.message);
         logger.info(err.stack);
       }
