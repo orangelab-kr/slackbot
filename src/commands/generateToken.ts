@@ -8,7 +8,7 @@ import {
   InternalPlatformClient,
   InternalRideClient,
   InternalWebhookClient,
-} from 'openapi-internal-sdk';
+} from '@hikick/openapi-internal-sdk';
 
 const services: { [key: string]: any } = {
   'openapi-discount': InternalDiscountClient,

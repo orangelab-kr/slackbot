@@ -1,4 +1,4 @@
-import { InternalKickboard } from 'openapi-internal-sdk';
+import { InternalKickboard } from '@hikick/openapi-internal-sdk';
 import { InternalClient } from '..';
 
 export class Kickboard {
